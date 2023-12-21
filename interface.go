@@ -34,6 +34,7 @@ type FileRotatedEvent struct {
 // automatically rotated as you write to it.
 type RotateLogs struct {
 	clock         Clock
+	prevFn        string
 	curFn         string
 	curBaseFn     string
 	globPattern   string

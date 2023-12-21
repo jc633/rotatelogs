@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lestrrat-go/file-rotatelogs/internal/fileutil"
+	"github.com/jc633/rotatelogs/internal/fileutil"
 	strftime "github.com/lestrrat-go/strftime"
 	"github.com/pkg/errors"
 )
@@ -196,6 +196,7 @@ func (rl *RotateLogs) getWriterNolock(bailOnRotateFail, useGenerationalNames boo
 	rl.outFh = fh
 	rl.curBaseFn = baseFn
 	rl.curFn = filename
+	rl.prevFn = previousFn
 	rl.generation = generation
 
 	if h := rl.eventHandler; h != nil {
@@ -215,6 +216,16 @@ func (rl *RotateLogs) CurrentFileName() string {
 	defer rl.mutex.RUnlock()
 
 	return rl.curFn
+}
+
+// PreviousFileName returns the previous file name that
+// the RotateLogs object was writing to
+func (rl *RotateLogs) PreviousFileName() string {
+	rl.mutex.RLock()
+	defer rl.mutex.RUnlock()
+
+	return rl.prevFn
+
 }
 
 var patternConversionRegexps = []*regexp.Regexp{
